@@ -1,0 +1,1 @@
+# Core dependencies (no external packages needed for this project)

@@ -1,6 +1,6 @@
 # GitHub Actions CI/CD Demo
 
-A demonstration project showcasing a complete CI/CD pipeline implementation using GitHub Actions for automated linting, testing, build, and deployment workflows.
+A demonstration project showcasing a complete CI/CD pipeline implementation using GitHub Actions for automated testing, linting, code quality checks, and deployment workflows - built with **Python**.
 
 ## 📋 Table of Contents
 
@@ -10,36 +10,36 @@ A demonstration project showcasing a complete CI/CD pipeline implementation usin
 - [Installation](#installation)
 - [Usage](#usage)
 - [Project Structure](#project-structure)
-- [Scripts](#scripts)
+- [Scripts & Commands](#scripts--commands)
 - [Testing](#testing)
-- [Linting](#linting)
+- [Code Quality](#code-quality)
 - [CI/CD Pipeline](#cicd-pipeline)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Overview
 
-This project demonstrates a professional CI/CD setup using GitHub Actions. It includes a simple math utility library with comprehensive test coverage, linting, and automated workflows that run on every push and pull request.
+This project demonstrates a professional CI/CD setup using GitHub Actions with **Python**. It includes a simple math utility library with comprehensive test coverage, automated code quality checks, and workflows that run on every push and pull request.
 
 The pipeline is designed to:
-- Automatically test code across multiple Node.js versions
-- Enforce code quality standards with ESLint
-- Build and validate the application
+- Automatically test code across multiple Python versions (3.9, 3.11, 3.12)
+- Enforce code quality standards with Pylint, Flake8, and Black
+- Validate code formatting and style
 - Report results back to GitHub
 
 ## Features
 
-✅ **Multi-version Testing** - Tests run on Node.js 18.x, 20.x, and 22.x  
-✅ **Automated Linting** - ESLint configuration for code quality  
-✅ **Comprehensive Testing** - Jest test suite with multiple test cases  
-✅ **Build Pipeline** - Automated build process  
+✅ **Multi-version Testing** - Tests run on Python 3.9, 3.11, and 3.12  
+✅ **Automated Linting** - Flake8 and Pylint for code quality  
+✅ **Code Formatting** - Black for consistent code style  
+✅ **Comprehensive Testing** - Pytest test suite with multiple test cases  
 ✅ **GitHub Actions Integration** - Automated CI/CD on push and pull requests  
 ✅ **Code Quality Checks** - Dedicated code quality job in the pipeline  
 
 ## Prerequisites
 
-- **Node.js** - Version 18.x or higher
-- **npm** - Version 8 or higher
+- **Python** - Version 3.9 or higher
+- **pip** - Python package manager
 - **Git** - For cloning and version control
 
 ## Installation
@@ -50,9 +50,15 @@ The pipeline is designed to:
    cd github-actions-cicd-demo
    ```
 
-2. **Install dependencies**
+2. **Create a virtual environment** (recommended)
    ```bash
-   npm install
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements-dev.txt
    ```
 
 ## Usage
@@ -62,7 +68,7 @@ The pipeline is designed to:
 Execute the main application:
 
 ```bash
-node src/index.js
+python src/main.py
 ```
 
 **Expected Output:**
@@ -71,20 +77,20 @@ CI/CD Demo Application
 Addition result: 15
 Subtraction result: 5
 Multiplication result: 50
-Division result: 2
+Division result: 2.0
 ```
 
 ### Using the Math Library
 
 Import and use the math utilities in your own code:
 
-```javascript
-const { add, subtract, multiply, divide } = require("./src/math");
+```python
+from src.math import add, subtract, multiply, divide
 
-console.log(add(10, 5));        // 15
-console.log(subtract(10, 5));   // 5
-console.log(multiply(10, 5));   // 50
-console.log(divide(10, 5));     // 2
+print(add(10, 5))        # 15
+print(subtract(10, 5))   # 5
+print(multiply(10, 5))   # 50
+print(divide(10, 5))     # 2.0
 ```
 
 ## Project Structure
@@ -93,32 +99,69 @@ console.log(divide(10, 5));     // 2
 github-actions-cicd-demo/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml              # GitHub Actions CI/CD workflow
+│       └── ci.yml                  # GitHub Actions CI/CD workflow
 ├── src/
-│   ├── index.js                # Main entry point demonstrating the library
-│   └── math.js                 # Math utility functions (add, subtract, multiply, divide)
+│   ├── __init__.py                 # Python package initialization
+│   ├── main.py                     # Main entry point demonstrating the library
+│   └── math.py                     # Math utility functions (add, subtract, multiply, divide)
 ├── tests/
-│   └── math.test.js            # Jest test suite for math functions
-├── .eslintrc.json              # ESLint configuration
-├── jest.config.js              # Jest testing framework configuration
-├── package.json                # Project metadata and dependencies
-├── LICENSE                      # ISC license
-└── README.md                    # This file
+│   ├── __init__.py                 # Python package initialization
+│   └── test_math.py                # Pytest test suite for math functions
+├── requirements.txt                # Runtime dependencies
+├── requirements-dev.txt            # Development dependencies
+├── LICENSE                         # ISC license
+└── README.md                       # This file
 ```
 
-## Scripts
+## Scripts & Commands
 
-The following npm scripts are available:
+### Testing
 
-| Script | Description |
-|--------|-------------|
-| `npm test` | Run Jest test suite |
-| `npm run lint` | Run ESLint to check code quality |
-| `npm run build` | Build the project |
+Run the test suite using pytest:
+
+```bash
+pytest tests/ -v
+```
+
+### Linting
+
+Run Flake8 for basic linting:
+
+```bash
+flake8 src tests
+```
+
+Run Pylint for detailed code analysis:
+
+```bash
+pylint src/
+```
+
+### Code Formatting
+
+Check code formatting with Black:
+
+```bash
+black --check src tests
+```
+
+Format code automatically:
+
+```bash
+black src tests
+```
+
+### Run All Checks
+
+Run all checks in sequence:
+
+```bash
+flake8 src tests && pytest tests/ -v && pylint src/ && black --check src tests
+```
 
 ## Testing
 
-The project uses **Jest** for unit testing. The test suite is located in `tests/math.test.js` and covers:
+The project uses **Pytest** for unit testing. The test suite is located in `tests/test_math.py` and covers:
 
 - ➕ Addition functionality
 - ➖ Subtraction functionality  
@@ -129,35 +172,48 @@ The project uses **Jest** for unit testing. The test suite is located in `tests/
 ### Run Tests
 
 ```bash
-npm test
+pytest tests/ -v
 ```
 
 **Example Output:**
 ```
-PASS  tests/math.test.js
-  ✓ adds two numbers correctly (2 ms)
-  ✓ subtracts two numbers correctly (1 ms)
-  ✓ multiplies two numbers correctly (1 ms)
-  ✓ divides two numbers correctly (1 ms)
-  ✓ throws error when dividing by zero (1 ms)
+tests/test_math.py::test_add PASSED                                    [ 20%]
+tests/test_math.py::test_subtract PASSED                              [ 40%]
+tests/test_math.py::test_multiply PASSED                              [ 60%]
+tests/test_math.py::test_divide PASSED                                [ 80%]
+tests/test_math.py::test_divide_by_zero PASSED                        [100%]
 
-Test Suites: 1 passed, 1 total
-Tests:       5 passed, 5 total
+============================== 5 passed in 0.05s ==============================
 ```
 
-## Linting
+## Code Quality
 
-The project uses **ESLint** to maintain consistent code quality and style.
+The project uses three main tools for code quality:
 
-### Run Linting
+### Flake8
+
+Checks for PEP 8 compliance and common errors:
 
 ```bash
-npm run lint
+flake8 src tests
 ```
 
-ESLint configuration is defined in `.eslintrc.json` and applied to:
-- Source files in `src/`
-- Test files in `tests/`
+### Pylint
+
+Provides detailed code analysis and ratings:
+
+```bash
+pylint src/
+```
+
+### Black
+
+Ensures consistent code formatting:
+
+```bash
+black --check src tests  # Check formatting
+black src tests          # Auto-format code
+```
 
 ## CI/CD Pipeline
 
@@ -167,25 +223,25 @@ The GitHub Actions pipeline is configured in `.github/workflows/ci.yml` and prov
 
 The pipeline executes on:
 - **Triggers**: Push to `main` or `develop` branches, and on pull requests
-- **Matrix Testing**: Runs across Node.js versions 18.x, 20.x, and 22.x
+- **Matrix Testing**: Runs across Python versions 3.9, 3.11, and 3.12
 
 ### Pipeline Jobs
 
 #### 1. **Test Job** (ubuntu-latest)
-Runs across multiple Node.js versions:
+Runs across multiple Python versions:
 - ✓ Checkout code
-- ✓ Setup Node.js (18.x, 20.x, 22.x)
+- ✓ Setup Python (3.9, 3.11, 3.12)
 - ✓ Install dependencies
-- ✓ Run ESLint
-- ✓ Run Jest tests
-- ✓ Build project
+- ✓ Run Flake8 linting
+- ✓ Run Black formatting check
+- ✓ Run Pytest tests
 
 #### 2. **Code Quality Job** (ubuntu-latest)
 Additional code quality verification:
 - ✓ Checkout code
-- ✓ Setup Node.js (18.x)
+- ✓ Setup Python (3.11)
 - ✓ Install dependencies
-- ✓ Run ESLint checks
+- ✓ Run Pylint analysis
 
 #### 3. **Success Notification Job**
 Confirms all previous jobs completed successfully:
@@ -200,10 +256,11 @@ Pipeline results are available in the **Actions** tab of the GitHub repository. 
 Contributions are welcome! When submitting changes:
 
 1. Create a feature branch from `develop`
-2. Ensure all tests pass (`npm test`)
-3. Ensure linting passes (`npm run lint`)
-4. Submit a pull request with a clear description
-5. The CI/CD pipeline will automatically validate your changes
+2. Ensure all tests pass (`pytest tests/ -v`)
+3. Ensure code formatting passes (`black --check src tests`)
+4. Ensure linting passes (`flake8 src tests`)
+5. Submit a pull request with a clear description
+6. The CI/CD pipeline will automatically validate your changes
 
 ## License
 

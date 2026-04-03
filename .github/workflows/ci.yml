@@ -12,31 +12,33 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        python-version: ['3.9', '3.11', '3.12']
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+    - name: Setup Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
       with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
 
     - name: Install dependencies
-      run: npm ci
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-dev.txt
 
-    - name: Run linting
-      run: npm run lint
+    - name: Run linting with flake8
+      run: flake8 src tests
       continue-on-error: true
 
-    - name: Run tests
-      run: npm test
-
-    - name: Build
-      run: npm run build
+    - name: Run code formatting check with Black
+      run: black --check src tests
       continue-on-error: true
+
+    - name: Run tests with pytest
+      run: pytest tests/ -v
 
   code-quality:
     runs-on: ubuntu-latest
@@ -46,17 +48,19 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+    - name: Setup Python
+      uses: actions/setup-python@v4
       with:
-        node-version: '18.x'
-        cache: 'npm'
+        python-version: '3.11'
+        cache: 'pip'
 
     - name: Install dependencies
-      run: npm ci
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-dev.txt
 
-    - name: Check code quality
-      run: npm run lint
+    - name: Run pylint
+      run: pylint src/ --fail-under=8.0
       continue-on-error: true
 
   success-message:
